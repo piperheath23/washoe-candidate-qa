@@ -381,25 +381,6 @@ searchEl.addEventListener('input', applySearch);
 
 applySearch();
 
-// --- Auto-resize: tell the parent page how tall we are, whenever it changes ---
-function reportHeight() {
-  const height = document.documentElement.scrollHeight;
-  window.parent.postMessage({ type: 'washoe-qa-resize', height: height }, '*');
-}
-
-// Report on load, and whenever content changes (accordion open/close, search filtering)
-window.addEventListener('load', reportHeight);
-listEl.addEventListener('click', () => setTimeout(reportHeight, 50));
-searchEl.addEventListener('input', () => setTimeout(reportHeight, 50));
-
-// Some parent pages attach their message listener a beat after the iframe
-// fires its first "load" event, so that very first message can get missed.
-// Re-send a few extra times early on to make sure it lands.
-reportHeight();
-[100, 300, 600, 1000, 2000].forEach(delay => setTimeout(reportHeight, delay));
-
-// Also catch resizes from font loading, window resizing, etc.
-new ResizeObserver(reportHeight).observe(document.body);
 </script>
 </body>
 </html>
